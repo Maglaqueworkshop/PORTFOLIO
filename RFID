@@ -6,17 +6,31 @@ LiquidCrystal_I2C lcd(0x27, 16, 2); // Address, columns, rows
 
 int led1 = 6;
 int led2 = 7;
-
 #define RST_PIN 9
 #define SS_PIN 10
 
 byte readCard[4];
-String MasterTag = "161E454"; // REPLACE this Tag ID with your Tag ID!!!
-String MasterTag2 = "DA2DAD80"; // REPLACE this Tag ID with your Tag ID!!!
-String tagID = "161E454";
-String tagID2 = "DA2DAD80";
 
-// Create instances
+String tagID = ""; // Declare tagID as a global variable
+
+// INFORMATION CAN BE CUSTOMIZE FOR USE
+struct MasterTag {
+  String tagID; //REGISTERING ID
+  String name; //SETTING THE STUDENT NAME
+  int age; //THE AGE
+  String phoneNumber; //PHONE NUMBER
+  String location; // LOCATION
+};
+
+// Array of master tags
+// Setting/Inputting informations
+MasterTag masterTags[] = {
+  //TAGID, NAME, AGE, PHONENUMBER, LOCATION
+  {"161E4504", "MARK VERZON", 30, "+63123456789", "123 Location"},
+  //{"DA2DAD80", "ANNE DELACRUZ", 25, "+63987654321", "321 Location"},
+};
+
+// Create instance
 MFRC522 mfrc522(SS_PIN, RST_PIN);
 
 void setup()
@@ -30,10 +44,9 @@ void setup()
   pinMode(led2, OUTPUT);
 
   lcd.clear();
-  lcd.print(" Access Control ");
+  lcd.print("SYSTEM READY!");
   lcd.setCursor(0, 1);
-  lcd.print("<< Please Scan");
-
+  lcd.print("<<< SCAN HERE");
 }
 
 void loop()
@@ -44,40 +57,59 @@ void loop()
     lcd.clear();
     lcd.setCursor(0, 0);
 
-    if (tagID == MasterTag)
+    bool tagFound = false;
+    for (int i = 0; i < sizeof(masterTags) / sizeof(masterTags[0]); i++)
     {
-      lcd.print("SUCCESSFULLY IN!");
-      digitalWrite(led1, HIGH);
-      digitalWrite(led2, LOW);
-      // You can write any code here like opening doors, switching on a relay, lighting up an LED, or anything else you can think of.
-      lcd.setCursor(0, 1);
-      String name = "Adrian Maglaque!";
-      lcd.print(name);
+      if (tagID == masterTags[i].tagID)
+      {
+        tagFound = true;
+        lcd.print("SUCCESSFULLY IN!");
+        digitalWrite(led1, HIGH); //LIT YELLOW LED
+        digitalWrite(led2, LOW); //RED LOW
+
+        lcd.setCursor(0, 1);
+        scrollText("ID: " + masterTags[i].name); //PRINT THE NAME OF STUDENT
+        //scrollText("Age: " + String(masterTags[i].age));
+        //scrollText("Phone: " + masterTags[i].phoneNumber);
+        //scrollText("Location: " + masterTags[i].location);
+        delay(2000); //1SECONDS
+
+        lcd.clear();
+        lcd.setCursor(0, 0);
+        scrollText("PROCESS SAVED!");
+
+
+
+
+        break;
+      }
     }
-    else if(tagID2 == MasterTag2)
+    //IF CARD IS NOT REGISTERED TO MASTERTAGS ARRAY
+    //PROMPT THE USER THAT IT'S UNREGISTERED
+    if (!tagFound)
     {
-      digitalWrite(led2, HIGH);
-      digitalWrite(led1, LOW);
+      digitalWrite(led2, HIGH);//LIT RED
+      digitalWrite(led1, LOW);//YELLOW LOW
 
       lcd.print("UNSUCCESSFUL!");
 
       lcd.setCursor(0, 1);
-      String name = "CardUnregistered";
-      lcd.print(name);
+      scrollText("Card Unregistered!");
     }
 
-
-
-    delay(2000);
-    digitalWrite(led2, LOW);
-    digitalWrite(led1, LOW);
-    resetLCD();
+    delay(2000); //2SECONDS
+    digitalWrite(led2, LOW); //LOW DEFAULT
+    digitalWrite(led1, LOW); //LOW DEFAULT
+    resetLCD(); //CALL THE RSTLCD FUNCTION
   }
 }
 
 // Read new tag if available
 boolean getID()
 {
+  // Reset tagID
+  tagID = "";
+
   // Getting ready for Reading PICCs
   if (!mfrc522.PICC_IsNewCardPresent())
   { //If a new PICC placed to RFID reader continue
@@ -87,11 +119,11 @@ boolean getID()
   { //Since a PICC placed get Serial and continue
     return false;
   }
-  tagID = "";
-  for (uint8_t i = 0; i < 4; i++)
-  { // The MIFARE PICCs that we use have 4 byte UID
-    //readCard[i] = mfrc522.uid.uidByte[i];
-    tagID.concat(String(mfrc522.uid.uidByte[i], HEX)); // Adds the 4 bytes in a single String variable
+  
+  for (uint8_t i = 0; i < mfrc522.uid.size; i++)
+  { // The size of UID may vary
+    tagID += String(mfrc522.uid.uidByte[i] < 0x10 ? "0" : ""); // Add leading 0 if byte is less than 0x10
+    tagID += String(mfrc522.uid.uidByte[i], HEX); // Adds the bytes in a single String variable
   }
   tagID.toUpperCase();
   Serial.println("Tag ID: " + tagID); // Print the tag ID to serial monitor for debugging
@@ -99,11 +131,30 @@ boolean getID()
   return true;
 }
 
+void scrollText(String text)
+{
+  int textLength = text.length();
+  if (textLength > 16) // If text length exceeds the display width
+  {
+    for (int i = 0; i <= textLength - 16; i++)//LOOPING EACH
+    {
+      //lcd.clear();
+      lcd.setCursor(0, 1);
+      lcd.print(text.substring(i, i + 16));
+      delay(1000); // Adjust scrolling speed here
+    }
+  }
+  else // If text length is within the display width
+  {
+    lcd.print(text);
+  }
+}
 
+//ALWAYS CALLED AFTER SCANNING ID'S
 void resetLCD()
 {
   lcd.clear();
-  lcd.print("ATTENDANCE");
+  lcd.print("SYSTEM READY!");
   lcd.setCursor(0, 1);
-  lcd.print("<< Please Scan");
+  lcd.print("<<< SCAN HERE");
 }
