@@ -1,0 +1,42 @@
+
+
+from PyQt5 import QtCore, QtGui, QtWidgets
+
+
+class Ui_Dialog(object):
+    def setupUi(self, Dialog):
+        Dialog.setObjectName("Dialog")
+        Dialog.resize(399, 321)
+        self.usernameInput = QtWidgets.QLineEdit(Dialog)
+        self.usernameInput.setGeometry(QtCore.QRect(60, 40, 281, 41))
+        self.usernameInput.setObjectName("usernameInput")
+        self.passwordInput = QtWidgets.QLineEdit(Dialog)
+        self.passwordInput.setGeometry(QtCore.QRect(58, 111, 281, 41))
+        self.passwordInput.setObjectName("passwordInput")
+        self.ConfirmButton = QtWidgets.QPushButton(Dialog)
+        self.ConfirmButton.setGeometry(QtCore.QRect(140, 180, 101, 51))
+        self.ConfirmButton.setObjectName("ConfirmButton")
+        self.RegisterButton = QtWidgets.QPushButton(Dialog)
+        self.RegisterButton.setGeometry(QtCore.QRect(140, 240, 101, 51))
+        self.RegisterButton.setObjectName("RegisterButton")
+
+        self.retranslateUi(Dialog)
+        QtCore.QMetaObject.connectSlotsByName(Dialog)
+
+    def retranslateUi(self, Dialog):
+        _translate = QtCore.QCoreApplication.translate
+        Dialog.setWindowTitle(_translate("Dialog", "Dialog"))
+        self.usernameInput.setPlaceholderText(_translate("Dialog", "Username"))
+        self.passwordInput.setPlaceholderText(_translate("Dialog", "Password"))
+        self.ConfirmButton.setText(_translate("Dialog", "CONFIRM"))
+        self.RegisterButton.setText(_translate("Dialog", "Register"))
+
+
+if __name__ == "__main__":
+    import sys
+    app = QtWidgets.QApplication(sys.argv)
+    Dialog = QtWidgets.QDialog()
+    ui = Ui_Dialog()
+    ui.setupUi(Dialog)
+    Dialog.show()
+    sys.exit(app.exec_())
