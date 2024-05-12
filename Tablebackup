@@ -4,11 +4,17 @@ import subprocess
 from PyQt5.QtWidgets import QMessageBox
 from docx import Document
 import os
-from PyQt5.QtWidgets import QFileDialog
+from PyQt5.QtWidgets import QFileDialog, QDialog, QPushButton, QRadioButton, QVBoxLayout
+import openpyxl
+
+
 
 
 
 class Ui_Form(object):
+    
+
+
     def setupUi(self, Form):
         Form.setObjectName("Form")
         Form.resize(1166, 604)
@@ -341,36 +347,61 @@ class Ui_Form(object):
         self.tableWidget.horizontalHeader().setSortIndicatorShown(False)
         self.SortButton.clicked.connect(self.sort_data)
         self.sort_order = QtCore.Qt.AscendingOrder  # Initialize sort order variable
+        
+        # Add a column to store the sort order in your SQLite database
+        self.cursor.execute("""
+            CREATE TABLE IF NOT EXISTS sorting_info (
+                id INTEGER PRIMARY KEY AUTOINCREMENT,
+                sort_order INTEGER
+            )
+        """)
+        self.connection.commit()
+        
 
+#--------------------------------------------------------------            
 
+    #*
+ #   def update_table_periodically(self):
+#        self.update_table_widget()
+
+      #  update_interval = 5000  # Update every 5 seconds
+
+      #  self.timer = QtCore.QTimer()
+     #   self.timer.timeout.connect(self.update_table_widget)
+    #    self.timer.start(update_interval)
+    
 
 
 #--------------------------------------------------------------            
 
-#SORTING DATA BY DEFAULT
+        #SORTING DATA BY DEFAULT
     def sort_data(self):
-        # Get the column index of the "Time" column
-        time_column_index = self.tableWidget.horizontalHeaderItem(4).column()
+        time_column_index = 4  # Assuming the index of the time column is 4 (0-based indexing)
 
-        # Set the sort order based on the current state
         if self.sort_order == QtCore.Qt.AscendingOrder:
             self.sort_order = QtCore.Qt.DescendingOrder
         else:
             self.sort_order = QtCore.Qt.AscendingOrder
 
-        # Sort the table widget by the "Time" column
-        self.tableWidget.sortItems(time_column_index, self.sort_order)
+        # Update the sort order in the database
+        self.cursor.execute("UPDATE sorting_info SET sort_order = ?", (self.sort_order,))
+        self.connection.commit()
+
+        # Update the table widget to reflect the new sort order
+        self.tableWidget.sortByColumn(time_column_index, self.sort_order)
+
+            
+
+
 
 #--------------------------------------------------------------            
 
-#--
     def check_changes(self):
         try:
             if self.tableWidget.rowCount() > 0:  # Check if there's data in the table
                 if hasattr(self, 'SaveButton'):
                     self.SaveButton.setEnabled(self.changes_made)
                 else:
-                    # Create a SaveButton if it doesn't exist
                     self.SaveButton = QtWidgets.QPushButton(Form)
                     self.SaveButton.setGeometry(QtCore.QRect(930, 540, 221, 41))
                     font = QtGui.QFont()
@@ -397,21 +428,17 @@ class Ui_Form(object):
         
 #DELETE BUTTON
     def delete_data(self):
-        # Get the selected cell
         selected_items = self.tableWidget.selectedItems()
         if not selected_items:
             return
         row = selected_items[0].row()
-        # Display a confirmation dialog
         reply = QMessageBox.question(Form, 'Confirmation', 'Are you sure you want to delete this row?', 
                               QMessageBox.Yes | QMessageBox.No, QMessageBox.No)
         if reply == QMessageBox.Yes:
             try:
-                # Delete the entire row from the database
                 self.cursor.execute(f"DELETE FROM your_table_name WHERE rowid = (SELECT rowid FROM your_table_name LIMIT 1 OFFSET {row})")
                 self.connection.commit()  # Commit changes
 
-                # Update the table widget
                 self.update_table_widget()
 
             except sqlite3.Error as e:
@@ -421,7 +448,6 @@ class Ui_Form(object):
            
 #INSERT BUTTON
     def insert_data(self):
-        # Retrieve data from line edits
         last_name = self.Last.text()
         first_name = self.First.text()
         middle = self.Middle.text()
@@ -429,23 +455,19 @@ class Ui_Form(object):
         time = self.Time.text()
         date = self.Date.text()
 
-        # Check if all required fields (Last Name, First Name, Middle, Section, Time, and Date) are filled
         if not (last_name and first_name and section and time and date):
             QMessageBox.warning(None, "Warning", "Please fill all the required fields.")
             return
 
         try:
-            # Insert data into the database
             self.cursor.execute("""
                 INSERT INTO your_table_name (last_name, first_name, middle, section, time, date)
                 VALUES (?, ?, ?, ?, ?, ?)
             """, (last_name, first_name, middle, section, time, date))
             self.connection.commit()  # Commit changes
 
-            # Update the table widget
             self.update_table_widget()
 
-            # Clear line edits after successful insertion
             self.Last.clear()
             self.First.clear()
             self.Middle.clear()
@@ -458,10 +480,8 @@ class Ui_Form(object):
 
 #--------------------------------------------------------------    
         
-#UPDATING TABLE WHEN THE APPLICATION RUNS
     def update_table_widget(self):
         try:
-            # Fetch column names from the database table
             self.cursor.execute("PRAGMA table_info(your_table_name)")
             columns = self.cursor.fetchall()
 
@@ -501,14 +521,14 @@ class Ui_Form(object):
 #--------------------------------------------------------------          
             
 #EDITING DATA
-    def edit_data(self, row):
+    def edit_data(self, original_row):
         try:
-            # Fetch data from the database based on the row index
+            # Fetch data from the database based on the original row index
             self.cursor.execute("SELECT last_name, first_name, middle, section, time, date FROM your_table_name ORDER BY rowid")
             data = self.cursor.fetchall()
             if data:
                 # Get the data corresponding to the selected row
-                last_name, first_name, middle, section, time, date = data[row]
+                last_name, first_name, middle, section, time, date = data[original_row]
                 # Create a dialog window for editing
                 edit_dialog = QtWidgets.QDialog()
                 edit_dialog.setWindowTitle("Edit Data")
@@ -533,7 +553,7 @@ class Ui_Form(object):
                 # Initialize the Save button as disabled
                 save_button.setEnabled(False)
                 # Connect the "Save" button to a method for saving the changes
-                save_button.clicked.connect(lambda: self.save_changes(row, last_name_edit.text(), first_name_edit.text(),
+                save_button.clicked.connect(lambda: self.save_changes(original_row, last_name_edit.text(), first_name_edit.text(),
                                                                       middle_edit.text(), section_edit.text(),
                                                                       time_edit.text(), date_edit.text(), save_button,
                                                                       last_name_edit, first_name_edit, middle_edit,
@@ -554,36 +574,41 @@ class Ui_Form(object):
         except sqlite3.Error as e:
             print("Error editing data:", e)
 
+
 #--------------------------------------------------------------       
-     
-#PRINTING DATA BY MAKING A DOCUMENT
     def print_data(self):
         try:
-            # Create a new Word document
-            doc = Document()
-            # Add a title to the document
-            doc.add_heading('Table Data', level=1)
-            # Define headers to include in the document
-            headers = ["Last", "First", "Middle", "Section", "Time", "Date"]
-            # Add table headers
-            table = doc.add_table(rows=1, cols=len(headers))
-            hdr_cells = table.rows[0].cells
-            for i, header in enumerate(headers):
-                hdr_cells[i].text = header
-            # Add table data from the table widget
-            for row in range(self.tableWidget.rowCount()):
-                row_cells = table.add_row().cells
-                for column in range(self.tableWidget.columnCount()):
-                    item = self.tableWidget.item(row, column)
-                    if item is not None:
-                        row_cells[column].text = item.text()
-            # Save the document
-            temp_file = "table_data.docx"
-            doc.save(temp_file)
-            # Open the document using the default application associated with .docx files
-            subprocess.Popen(["start", "", temp_file], shell=True)
+            # Fetch data from the database
+            self.cursor.execute("SELECT last_name, first_name, middle, section, time, date FROM your_table_name")
+            data = self.cursor.fetchall()
+
+            if data:
+                # Create a new Excel workbook
+                workbook = openpyxl.Workbook()
+                sheet = workbook.active
+
+                # Write headers to the first row
+                headers = ["Last Name", "First Name", "Middle", "Section", "Time", "Date"]
+                for col, header in enumerate(headers, start=1):
+                    sheet.cell(row=1, column=col, value=header)
+
+                # Write data to the subsequent rows
+                for row_index, row_data in enumerate(data, start=2):
+                    for col_index, cell_data in enumerate(row_data, start=1):
+                        sheet.cell(row=row_index, column=col_index, value=cell_data)
+
+                # Save the Excel file
+                excel_file = "data.xlsx"
+                workbook.save(excel_file)
+
+                # Open the Excel file using subprocess
+                subprocess.Popen(["start", excel_file], shell=True)
+
+            else:
+                QMessageBox.warning(None, "Warning", "No data available to print.")
+
         except Exception as e:
-            QMessageBox.warning(None, "Error", f"An error occurred while generating the document: {e}")
+            print("Error printing data:", e)
 
 #--------------------------------------------------------------       
      
@@ -693,5 +718,6 @@ if __name__ == "__main__":
     Form = QtWidgets.QWidget()
     ui = Ui_Form()
     ui.setupUi(Form)
+    #ui.update_table_periodically()  # Start periodic table updates
     Form.show()
     sys.exit(app.exec_())
