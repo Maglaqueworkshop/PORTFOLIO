@@ -678,7 +678,7 @@ class Ui_Form(object):
 #NOT INCLUDED
     def retranslateUi(self, Form):
         _translate = QtCore.QCoreApplication.translate
-        Form.setWindowTitle(_translate("Form", "0"))
+        Form.setWindowTitle(_translate("Form", f"{username}"))
         self.InsertButton.setText(_translate("Form", "Insert"))
         self.DeleteButton.setText(_translate("Form", "Delete"))
         self.Last.setPlaceholderText(_translate("Form", "Last"))
@@ -696,7 +696,7 @@ class Ui_Form(object):
         self.label_9.setText(_translate("Form", "Date"))
         self.PrintButton.setText(_translate("Form", "Print"))
         self.SortButton.setText(_translate("Form", "Sort"))
-        self.label_10.setText(_translate("Form", "Welcome! "))
+        self.label_10.setText(_translate("Form", f"Welcome {username}!!!"))
 import e_rc
 
 
@@ -714,4 +714,3 @@ if __name__ == "__main__":
     ui.setupUi(Form)
     Form.show()
     sys.exit(app.exec_())
-
