@@ -2,7 +2,7 @@
 
 #pyrcc5 -o basiclogin_rc.py basiclogin.qrc
 #pyrcc5 -o e_rc.py e.qrc
-
+#pyinstaller --noconsole login.py --onefile
 
 import sys
 from PyQt5 import QtCore, QtWidgets, QtGui
@@ -77,6 +77,7 @@ class Ui_Dialog(object):
         self.passwordInput_2.setStyleSheet("border-radius: 5px;\n"
 "background-color: rgb(226, 226, 226);")
         self.passwordInput_2.setObjectName("passwordInput_2")
+        self.passwordInput_2.setEchoMode(QtWidgets.QLineEdit.Password)
         self.label_4 = QtWidgets.QLabel(Dialog)
         self.label_4.setGeometry(QtCore.QRect(-170, 0, 721, 121))
         self.label_4.setText("")
@@ -129,7 +130,7 @@ class Ui_Dialog(object):
 
     def retranslateUi(self, Dialog):
         _translate = QtCore.QCoreApplication.translate
-        Dialog.setWindowTitle(_translate("Dialog", "Dialog"))
+        Dialog.setWindowTitle(_translate("Dialog", "Clark College of Science and Technology"))
         self.ConfirmButton.setText(_translate("Dialog", "LOGIN"))
         self.RegisterButton.setText(_translate("Dialog", "REGISTER"))
         self.usernameInput_2.setPlaceholderText(_translate("Dialog", "Username"))
@@ -138,14 +139,14 @@ class Ui_Dialog(object):
         
 
     def register(self):
-        username = self.usernameInput.text()
-        password = self.passwordInput.text()
+        username = self.usernameInput_2.text()
+        password = self.usernameInput_2.text()
         # Insert username and password into the database
         self.cur.execute("INSERT INTO users (username, password) VALUES (?, ?)", (username, password))
         self.conn.commit()
         QMessageBox.information(None, "Registration", "Registration Successful")
-        self.usernameInput.clear()
-        self.passwordInput.clear()
+        self.usernameInput_2.clear()
+        self.usernameInput_2.clear()
 
     def login(self):
         username = self.usernameInput_2.text()
