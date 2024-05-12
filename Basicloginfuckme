@@ -1,9 +1,11 @@
+import sys
+from PyQt5 import QtCore, QtWidgets
+from PyQt5.QtWidgets import QMessageBox
+import sqlite3
+import subprocess
+from table import Ui_Form
 
-
-from PyQt5 import QtCore, QtGui, QtWidgets
-
-
-class Ui_Dialog(object):
+class LOGIN(object):
     def setupUi(self, Dialog):
         Dialog.setObjectName("Dialog")
         Dialog.resize(399, 321)
@@ -23,6 +25,41 @@ class Ui_Dialog(object):
         self.retranslateUi(Dialog)
         QtCore.QMetaObject.connectSlotsByName(Dialog)
 
+        self.RegisterButton.clicked.connect(self.register)
+        self.ConfirmButton.clicked.connect(self.login)
+
+        # Create or connect to the database
+        self.conn = sqlite3.connect("user.db")
+        self.cur = self.conn.cursor()
+        # Create table if not exists
+        self.cur.execute("CREATE TABLE IF NOT EXISTS users (id INTEGER PRIMARY KEY, username TEXT, password TEXT)")
+        self.conn.commit()
+
+    def register(self):
+        username = self.usernameInput.text()
+        password = self.passwordInput.text()
+        # Insert username and password into the database
+        self.cur.execute("INSERT INTO users (username, password) VALUES (?, ?)", (username, password))
+        self.conn.commit()
+        QMessageBox.information(None, "Registration", "Registration Successful")
+        self.usernameInput.clear()
+        self.passwordInput.clear()
+
+    def login(self):
+        username = self.usernameInput.text()
+        password = self.passwordInput.text()
+        # Query the database for the provided username and password
+        self.cur.execute("SELECT * FROM users WHERE username=? AND password=?", (username, password))
+        user = self.cur.fetchone()
+        if user:
+            QMessageBox.information(None, "Login", f"{username} welcome back!")
+            # Open table.py after successful login
+            subprocess.Popen(["python", "table.py", username])
+        else:
+            QMessageBox.warning(None, "Login", "Invalid username or password")
+        self.usernameInput.clear()
+        self.passwordInput.clear()
+
     def retranslateUi(self, Dialog):
         _translate = QtCore.QCoreApplication.translate
         Dialog.setWindowTitle(_translate("Dialog", "Dialog"))
@@ -33,10 +70,10 @@ class Ui_Dialog(object):
 
 
 if __name__ == "__main__":
-    import sys
     app = QtWidgets.QApplication(sys.argv)
     Dialog = QtWidgets.QDialog()
-    ui = Ui_Dialog()
+    ui = LOGIN()
     ui.setupUi(Dialog)
     Dialog.show()
     sys.exit(app.exec_())
+    
