@@ -1,0 +1,174 @@
+
+
+#pyrcc5 -o basiclogin_rc.py basiclogin.qrc
+#pyrcc5 -o e_rc.py e.qrc
+
+
+import sys
+from PyQt5 import QtCore, QtWidgets, QtGui
+from PyQt5.QtWidgets import QMessageBox
+import sqlite3
+import subprocess
+from table import Ui_Form
+
+
+class Ui_Dialog(object):
+    def setupUi(self, Dialog):
+        Dialog.setObjectName("Dialog")
+        Dialog.resize(399, 402)
+        self.ConfirmButton = QtWidgets.QPushButton(Dialog)
+        self.ConfirmButton.setGeometry(QtCore.QRect(60, 320, 131, 41))
+        font = QtGui.QFont()
+        font.setFamily("Arial")
+        font.setPointSize(12)
+        font.setBold(True)
+        font.setItalic(False)
+        font.setWeight(75)
+        self.ConfirmButton.setFont(font)
+        self.ConfirmButton.setCursor(QtGui.QCursor(QtCore.Qt.PointingHandCursor))
+        self.ConfirmButton.setStyleSheet("border-radius: 9px;\n"
+"background-color: rgb(255, 255, 255);\n"
+"background-color: rgb(23, 65, 255);\n"
+"color: rgb(255, 255, 255);\n"
+"")
+        self.ConfirmButton.setObjectName("ConfirmButton")
+        self.RegisterButton = QtWidgets.QPushButton(Dialog)
+        self.RegisterButton.setGeometry(QtCore.QRect(210, 320, 131, 41))
+        font = QtGui.QFont()
+        font.setFamily("Arial")
+        font.setPointSize(12)
+        font.setBold(True)
+        font.setItalic(False)
+        font.setWeight(75)
+        self.RegisterButton.setFont(font)
+        self.RegisterButton.setCursor(QtGui.QCursor(QtCore.Qt.PointingHandCursor))
+        self.RegisterButton.setStyleSheet("border-radius: 9px;\n"
+"background-color: rgb(180, 180, 180);\n"
+"background-color: rgb(255, 255, 255);\n"
+"background-color: rgb(23, 65, 255);\n"
+"color: rgb(255, 255, 255);\n"
+"color: rgb(0, 0, 0);\n"
+"background-color: rgb(197, 197, 197);")
+        self.RegisterButton.setObjectName("RegisterButton")
+        self.usernameInput_2 = QtWidgets.QLineEdit(Dialog)
+        self.usernameInput_2.setGeometry(QtCore.QRect(100, 230, 221, 31))
+        font = QtGui.QFont()
+        font.setFamily("Verdana")
+        font.setPointSize(10)
+        font.setBold(False)
+        font.setItalic(False)
+        font.setWeight(50)
+        self.usernameInput_2.setFont(font)
+        self.usernameInput_2.setStyleSheet("border-radius: 5px;\n"
+"border-bottom-color: rgb(0, 0, 0);\n"
+"color: rgb(0, 0, 0);\n"
+"background-color: rgb(85, 255, 255);\n"
+"background-color: rgb(226, 226, 226);")
+        self.usernameInput_2.setObjectName("usernameInput_2")
+        self.passwordInput_2 = QtWidgets.QLineEdit(Dialog)
+        self.passwordInput_2.setGeometry(QtCore.QRect(100, 270, 221, 31))
+        font = QtGui.QFont()
+        font.setFamily("Verdana")
+        font.setPointSize(10)
+        font.setBold(False)
+        font.setItalic(False)
+        font.setWeight(50)
+        self.passwordInput_2.setFont(font)
+        self.passwordInput_2.setStyleSheet("border-radius: 5px;\n"
+"background-color: rgb(226, 226, 226);")
+        self.passwordInput_2.setObjectName("passwordInput_2")
+        self.label_4 = QtWidgets.QLabel(Dialog)
+        self.label_4.setGeometry(QtCore.QRect(-170, 0, 721, 121))
+        self.label_4.setText("")
+        self.label_4.setPixmap(QtGui.QPixmap(":/newPrefix/2024-03-09 16_50_18-Facebook.png"))
+        self.label_4.setScaledContents(True)
+        self.label_4.setObjectName("label_4")
+        self.Welcome_2 = QtWidgets.QLabel(Dialog)
+        self.Welcome_2.setGeometry(QtCore.QRect(-90, 100, 571, 101))
+        font = QtGui.QFont()
+        font.setFamily("Arial")
+        font.setPointSize(13)
+        font.setBold(True)
+        font.setItalic(True)
+        font.setWeight(75)
+        font.setStrikeOut(False)
+        self.Welcome_2.setFont(font)
+        self.Welcome_2.setStyleSheet("border-radius: 9px;\n"
+"background-color: qlineargradient(spread:pad, x1:0.472, y1:0, x2:0.460227, y2:1, stop:0.176136 rgba(46, 45, 149, 255), stop:1 rgba(255, 255, 255, 255));\n"
+"background-color: qlineargradient(spread:pad, x1:0.472, y1:0, x2:0.460227, y2:1, stop:0.176136 rgba(43, 42, 149, 255), stop:1 rgba(255, 255, 255, 255));\n"
+"background-color: qlineargradient(spread:pad, x1:0, y1:1, x2:1, y2:0.199, stop:0.176136 rgba(16, 12, 255, 255), stop:1 rgba(255, 255, 255, 255));\n"
+"background-color: rgb(255, 255, 255);\n"
+"background-color: rgb(23, 65, 255);\n"
+"color: rgb(255, 255, 255);\n"
+"background-color: qlineargradient(spread:pad, x1:0, y1:1, x2:1, y2:0.199, stop:0.176136 rgba(16, 12, 255, 255), stop:1 rgba(255, 255, 255, 255));\n"
+"background-color: qlineargradient(spread:pad, x1:0.472, y1:0, x2:0.460227, y2:1, stop:0.176136 rgba(53, 51, 182, 255), stop:1 rgba(255, 255, 255, 255));\n"
+"background-color: qlineargradient(spread:pad, x1:0.472, y1:0, x2:0.460227, y2:1, stop:0.176136 rgba(149, 84, 142, 255), stop:1 rgba(255, 255, 255, 255));\n"
+"background-color: qlineargradient(spread:pad, x1:0.472, y1:0, x2:0.460227, y2:1, stop:0.176136 rgba(46, 45, 149, 255), stop:1 rgba(255, 255, 255, 255));")
+        self.Welcome_2.setScaledContents(False)
+        self.Welcome_2.setAlignment(QtCore.Qt.AlignCenter)
+        self.Welcome_2.setObjectName("Welcome_2")
+        self.Welcome_2.raise_()
+        self.ConfirmButton.raise_()
+        self.RegisterButton.raise_()
+        self.usernameInput_2.raise_()
+        self.passwordInput_2.raise_()
+        self.label_4.raise_()
+
+        self.retranslateUi(Dialog)
+        QtCore.QMetaObject.connectSlotsByName(Dialog)
+        
+        self.RegisterButton.clicked.connect(self.register)
+        self.ConfirmButton.clicked.connect(self.login)
+
+        # Create or connect to the database
+        self.conn = sqlite3.connect("user.db")
+        self.cur = self.conn.cursor()
+        # Create table if not exists
+        self.cur.execute("CREATE TABLE IF NOT EXISTS users (id INTEGER PRIMARY KEY, username TEXT, password TEXT)")
+        self.conn.commit
+
+    def retranslateUi(self, Dialog):
+        _translate = QtCore.QCoreApplication.translate
+        Dialog.setWindowTitle(_translate("Dialog", "Dialog"))
+        self.ConfirmButton.setText(_translate("Dialog", "LOGIN"))
+        self.RegisterButton.setText(_translate("Dialog", "REGISTER"))
+        self.usernameInput_2.setPlaceholderText(_translate("Dialog", "Username"))
+        self.passwordInput_2.setPlaceholderText(_translate("Dialog", "Password"))
+        self.Welcome_2.setText(_translate("Dialog", "Welcome, Please Login!"))
+        
+
+    def register(self):
+        username = self.usernameInput.text()
+        password = self.passwordInput.text()
+        # Insert username and password into the database
+        self.cur.execute("INSERT INTO users (username, password) VALUES (?, ?)", (username, password))
+        self.conn.commit()
+        QMessageBox.information(None, "Registration", "Registration Successful")
+        self.usernameInput.clear()
+        self.passwordInput.clear()
+
+    def login(self):
+        username = self.usernameInput_2.text()
+        password = self.passwordInput_2.text()
+        # Query the database for the provided username and password
+        self.cur.execute("SELECT * FROM users WHERE username=? AND password=?", (username, password))
+        user = self.cur.fetchone()
+        if user:
+            QMessageBox.information(None, "Login", f"{username} welcome back!")
+            # Open table.py after successful login
+            subprocess.Popen(["python", "table.py", username])
+        else:
+            QMessageBox.warning(None, "Login", "Invalid username or password")
+        self.usernameInput_2.clear()
+        self.passwordInput_2.clear()
+
+
+
+if __name__ == "__main__":
+    import sys
+    app = QtWidgets.QApplication(sys.argv)
+    Dialog = QtWidgets.QDialog()
+    ui = Ui_Dialog()
+    ui.setupUi(Dialog)
+    Dialog.show()
+    sys.exit(app.exec_())
