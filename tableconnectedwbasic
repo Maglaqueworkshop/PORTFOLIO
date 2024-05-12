@@ -1,0 +1,717 @@
+from PyQt5 import QtCore, QtGui, QtWidgets
+import sqlite3
+import subprocess
+from PyQt5.QtWidgets import QMessageBox
+from docx import Document
+import os
+from PyQt5.QtWidgets import QFileDialog, QDialog, QPushButton, QRadioButton, QVBoxLayout
+import openpyxl
+
+
+
+
+
+class Ui_Form(object):
+    def __init__(self, username):
+        self.db_file = f"{username}_database_file.db"
+        print(self.db_file)
+
+
+    def setupUi(self, Form):
+        Form.setObjectName("Form")
+        Form.resize(1166, 604)
+        Form.setMinimumSize(QtCore.QSize(1166, 604))
+        Form.setMaximumSize(QtCore.QSize(1166, 604))
+        self.tableWidget = QtWidgets.QTableWidget(Form)
+        self.tableWidget.setGeometry(QtCore.QRect(0, 100, 901, 511))
+        self.tableWidget.setStyleSheet("color: black;\n"
+"font-size:19px;\n"
+"border-radius: 30px;\n"
+"")
+        self.tableWidget.setObjectName("tableWidget")
+        self.tableWidget.setColumnCount(6)  # Set the column count
+        self.tableWidget.setHorizontalHeaderLabels(["Last", "First", "Middle", "Section", "Time", "Date"])
+        self.tableWidget.horizontalHeader().setStretchLastSection(True)
+        self.tableWidget.horizontalHeader().setSortIndicatorShown(False)
+        self.tableWidget.horizontalHeader().setStretchLastSection(True)
+        self.tableWidget.verticalHeader().setCascadingSectionResizes(True)
+        self.label = QtWidgets.QLabel(Form)
+        self.label.setGeometry(QtCore.QRect(901, -20, 20, 631))
+        self.label.setStyleSheet("background-color: rgb(0, 0, 0);")
+        self.label.setText("")
+        self.label.setObjectName("label")
+        self.label_2 = QtWidgets.QLabel(Form)
+        self.label_2.setGeometry(QtCore.QRect(910, 0, 251, 611))
+        self.label_2.setStyleSheet("background-color: rgb(255, 255, 255);")
+        self.label_2.setText("")
+        self.label_2.setObjectName("label_2")
+        self.InsertButton = QtWidgets.QPushButton(Form)
+        self.InsertButton.setGeometry(QtCore.QRect(930, 390, 221, 41))
+        font = QtGui.QFont()
+        font.setFamily("Arial")
+        font.setPointSize(12)
+        font.setBold(True)
+        font.setItalic(False)
+        font.setWeight(75)
+        self.InsertButton.setFont(font)
+        self.InsertButton.setCursor(QtGui.QCursor(QtCore.Qt.PointingHandCursor))
+        self.InsertButton.setStyleSheet("border-radius: 9px;\n"
+"background-color: rgb(255, 255, 255);\n"
+"background-color: rgb(23, 65, 255);\n"
+"color: rgb(255, 255, 255);\n"
+"")
+        self.InsertButton.setObjectName("InsertButton")
+        self.DeleteButton = QtWidgets.QPushButton(Form)
+        self.DeleteButton.setGeometry(QtCore.QRect(930, 440, 221, 41))
+        font = QtGui.QFont()
+        font.setFamily("Arial")
+        font.setPointSize(12)
+        font.setBold(True)
+        font.setItalic(False)
+        font.setWeight(75)
+        self.DeleteButton.setFont(font)
+        self.DeleteButton.setCursor(QtGui.QCursor(QtCore.Qt.PointingHandCursor))
+        self.DeleteButton.setStyleSheet("border-radius: 9px;\n"
+"background-color: rgb(255, 255, 255);\n"
+"background-color: rgb(23, 65, 255);\n"
+"color: rgb(255, 255, 255);\n"
+"")
+        self.DeleteButton.setObjectName("DeleteButton")
+        self.Last = QtWidgets.QLineEdit(Form)
+        self.Last.setGeometry(QtCore.QRect(930, 40, 221, 31))
+        font = QtGui.QFont()
+        font.setFamily("Verdana")
+        font.setPointSize(10)
+        font.setBold(False)
+        font.setItalic(False)
+        font.setWeight(50)
+        self.Last.setFont(font)
+        self.Last.setStyleSheet("border-radius: 5px;\n"
+"border-bottom-color: rgb(0, 0, 0);\n"
+"color: rgb(0, 0, 0);\n"
+"background-color: rgb(85, 255, 255);\n"
+"background-color: rgb(226, 226, 226);")
+        self.Last.setObjectName("Last")
+        self.First = QtWidgets.QLineEdit(Form)
+        self.First.setGeometry(QtCore.QRect(930, 100, 221, 31))
+        font = QtGui.QFont()
+        font.setFamily("Verdana")
+        font.setPointSize(10)
+        font.setBold(False)
+        font.setItalic(False)
+        font.setWeight(50)
+        self.First.setFont(font)
+        self.First.setStyleSheet("border-radius: 5px;\n"
+"border-bottom-color: rgb(0, 0, 0);\n"
+"color: rgb(0, 0, 0);\n"
+"background-color: rgb(85, 255, 255);\n"
+"background-color: rgb(226, 226, 226);")
+        self.First.setObjectName("First")
+        self.Middle = QtWidgets.QLineEdit(Form)
+        self.Middle.setGeometry(QtCore.QRect(930, 160, 221, 31))
+        font = QtGui.QFont()
+        font.setFamily("Verdana")
+        font.setPointSize(10)
+        font.setBold(False)
+        font.setItalic(False)
+        font.setWeight(50)
+        self.Middle.setFont(font)
+        self.Middle.setStyleSheet("border-radius: 5px;\n"
+"border-bottom-color: rgb(0, 0, 0);\n"
+"color: rgb(0, 0, 0);\n"
+"background-color: rgb(85, 255, 255);\n"
+"background-color: rgb(226, 226, 226);")
+        self.Middle.setObjectName("Middle")
+        self.Section = QtWidgets.QLineEdit(Form)
+        self.Section.setGeometry(QtCore.QRect(930, 220, 221, 31))
+        font = QtGui.QFont()
+        font.setFamily("Verdana")
+        font.setPointSize(10)
+        font.setBold(False)
+        font.setItalic(False)
+        font.setWeight(50)
+        self.Section.setFont(font)
+        self.Section.setStyleSheet("border-radius: 5px;\n"
+"border-bottom-color: rgb(0, 0, 0);\n"
+"color: rgb(0, 0, 0);\n"
+"background-color: rgb(85, 255, 255);\n"
+"background-color: rgb(226, 226, 226);")
+        self.Section.setObjectName("Section")
+        self.Time = QtWidgets.QLineEdit(Form)
+        self.Time.setGeometry(QtCore.QRect(930, 280, 221, 31))
+        font = QtGui.QFont()
+        font.setFamily("Verdana")
+        font.setPointSize(10)
+        font.setBold(False)
+        font.setItalic(False)
+        font.setWeight(50)
+        self.Time.setFont(font)
+        self.Time.setStyleSheet("border-radius: 5px;\n"
+"border-bottom-color: rgb(0, 0, 0);\n"
+"color: rgb(0, 0, 0);\n"
+"background-color: rgb(85, 255, 255);\n"
+"background-color: rgb(226, 226, 226);")
+        self.Time.setObjectName("Time")
+        self.label1_6 = QtWidgets.QLineEdit(Form)
+        self.label1_6.setGeometry(QtCore.QRect(10, 60, 171, 31))
+        font = QtGui.QFont()
+        font.setFamily("Verdana")
+        font.setPointSize(10)
+        font.setBold(False)
+        font.setItalic(False)
+        font.setWeight(50)
+        self.label1_6.setFont(font)
+        self.label1_6.setStyleSheet("border-radius: 5px;\n"
+"border-bottom-color: rgb(0, 0, 0);\n"
+"color: rgb(0, 0, 0);\n"
+"background-color: rgb(85, 255, 255);\n"
+"background-color: rgb(226, 226, 226);")
+        self.label1_6.setObjectName("label1_6")
+        self.label_3 = QtWidgets.QLabel(Form)
+        self.label_3.setGeometry(QtCore.QRect(0, 0, 901, 101))
+        self.label_3.setText("")
+        self.label_3.setPixmap(QtGui.QPixmap(":/newPrefix/2024-03-09 16_50_18-Facebook.png"))
+        self.label_3.setScaledContents(True)
+        self.label_3.setObjectName("label_3")
+        self.label_4 = QtWidgets.QLabel(Form)
+        self.label_4.setGeometry(QtCore.QRect(930, 20, 41, 16))
+        font = QtGui.QFont()
+        font.setFamily("Arial")
+        font.setPointSize(12)
+        font.setBold(True)
+        font.setWeight(75)
+        self.label_4.setFont(font)
+        self.label_4.setObjectName("label_4")
+        self.label_5 = QtWidgets.QLabel(Form)
+        self.label_5.setGeometry(QtCore.QRect(930, 80, 41, 16))
+        font = QtGui.QFont()
+        font.setFamily("Arial")
+        font.setPointSize(12)
+        font.setBold(True)
+        font.setWeight(75)
+        self.label_5.setFont(font)
+        self.label_5.setObjectName("label_5")
+        self.label_6 = QtWidgets.QLabel(Form)
+        self.label_6.setGeometry(QtCore.QRect(930, 140, 61, 16))
+        font = QtGui.QFont()
+        font.setFamily("Arial")
+        font.setPointSize(12)
+        font.setBold(True)
+        font.setWeight(75)
+        self.label_6.setFont(font)
+        self.label_6.setObjectName("label_6")
+        self.label_7 = QtWidgets.QLabel(Form)
+        self.label_7.setGeometry(QtCore.QRect(930, 200, 61, 16))
+        font = QtGui.QFont()
+        font.setFamily("Arial")
+        font.setPointSize(12)
+        font.setBold(True)
+        font.setWeight(75)
+        self.label_7.setFont(font)
+        self.label_7.setObjectName("label_7")
+        self.label_8 = QtWidgets.QLabel(Form)
+        self.label_8.setGeometry(QtCore.QRect(930, 260, 61, 16))
+        font = QtGui.QFont()
+        font.setFamily("Arial")
+        font.setPointSize(12)
+        font.setBold(True)
+        font.setWeight(75)
+        self.label_8.setFont(font)
+        self.label_8.setObjectName("label_8")
+        self.Date = QtWidgets.QLineEdit(Form)
+        self.Date.setGeometry(QtCore.QRect(930, 340, 221, 31))
+        font = QtGui.QFont()
+        font.setFamily("Verdana")
+        font.setPointSize(10)
+        font.setBold(False)
+        font.setItalic(False)
+        font.setWeight(50)
+        self.Date.setFont(font)
+        self.Date.setStyleSheet("border-radius: 5px;\n"
+"border-bottom-color: rgb(0, 0, 0);\n"
+"color: rgb(0, 0, 0);\n"
+"background-color: rgb(85, 255, 255);\n"
+"background-color: rgb(226, 226, 226);")
+        self.Date.setObjectName("Date")
+        self.label_9 = QtWidgets.QLabel(Form)
+        self.label_9.setGeometry(QtCore.QRect(930, 320, 61, 16))
+        font = QtGui.QFont()
+        font.setFamily("Arial")
+        font.setPointSize(12)
+        font.setBold(True)
+        font.setWeight(75)
+        self.label_9.setFont(font)
+        self.label_9.setObjectName("label_9")
+        font = QtGui.QFont()
+        font.setFamily("Arial")
+        font.setPointSize(8)
+        font.setBold(True)
+        font.setItalic(False)
+        font.setWeight(75)
+        
+
+
+        self.PrintButton = QtWidgets.QPushButton(Form)
+        self.PrintButton.setGeometry(QtCore.QRect(930, 540, 221, 41))
+        font = QtGui.QFont()
+        font.setFamily("Arial")
+        font.setPointSize(12)
+        font.setBold(True)
+        font.setItalic(False)
+        font.setWeight(75)
+        
+
+
+
+        self.PrintButton.setFont(font)
+        self.PrintButton.setCursor(QtGui.QCursor(QtCore.Qt.PointingHandCursor))
+        self.PrintButton.setStyleSheet("border-radius: 9px;\n"
+"background-color: rgb(255, 255, 255);\n"
+"background-color: rgb(23, 65, 255);\n"
+"color: rgb(255, 255, 255);\n"
+"background-color: rgb(170, 255, 255);\n"
+"background-color: rgb(56, 170, 170);")
+        
+
+        self.PrintButton.setObjectName("PrintButton")
+        self.SortButton = QtWidgets.QPushButton(Form)
+        self.SortButton.setGeometry(QtCore.QRect(930, 490, 221, 41))
+        font = QtGui.QFont()
+        font.setFamily("Arial")
+        font.setPointSize(12)
+        font.setBold(True)
+        font.setItalic(False)
+        font.setWeight(75)
+        self.SortButton.setFont(font)
+        self.SortButton.setCursor(QtGui.QCursor(QtCore.Qt.PointingHandCursor))
+        self.SortButton.setStyleSheet("border-radius: 9px;\n"
+"background-color: rgb(255, 255, 255);\n"
+"background-color: rgb(23, 65, 255);\n"
+"color: rgb(255, 255, 255);\n"
+"background-color: rgb(255, 177, 52);")
+        self.SortButton.setObjectName("SortButton")
+        self.label_10 = QtWidgets.QLabel(Form)
+        self.label_10.setGeometry(QtCore.QRect(10, 30, 241, 16))
+        font = QtGui.QFont()
+        font.setFamily("Arial")
+        font.setPointSize(12)
+        font.setBold(True)
+        font.setWeight(75)
+        self.label_10.setFont(font)
+        self.label_10.setStyleSheet("\n"
+"color: rgb(255, 255, 255);")
+        self.label_10.setObjectName("label_10")
+        self.label.raise_()
+        self.tableWidget.raise_()
+        self.label_2.raise_()
+        self.InsertButton.raise_()
+        self.DeleteButton.raise_()
+        self.Last.raise_()
+        self.First.raise_()
+        self.Middle.raise_()
+        self.Section.raise_()
+        self.Time.raise_()
+        self.label_3.raise_()
+        self.label1_6.raise_()
+        self.label_4.raise_()
+        self.label_5.raise_()
+        self.label_6.raise_()
+        self.label_7.raise_()
+        self.label_8.raise_()
+        self.Date.raise_()
+        self.label_9.raise_()
+        self.PrintButton.raise_()
+        self.SortButton.raise_()
+        self.label_10.raise_()
+
+        self.connect_or_create_database(self.db_file)
+
+
+
+        self.retranslateUi(Form)
+        QtCore.QMetaObject.connectSlotsByName(Form)
+        self.InsertButton.clicked.connect(self.insert_data)
+        
+
+
+        self.DeleteButton.clicked.connect(self.delete_data)
+        self.label1_6.textChanged.connect(self.filter_table)
+        self.changes_made = False
+
+        # Connect QLineEdit fields to the method for tracking changes
+        self.Last.textChanged.connect(self.check_changes)
+        self.First.textChanged.connect(self.check_changes)
+        self.Middle.textChanged.connect(self.check_changes)
+        self.Section.textChanged.connect(self.check_changes)
+        self.Time.textChanged.connect(self.check_changes)
+        self.Date.textChanged.connect(self.check_changes)
+        self.PrintButton.clicked.connect(self.print_data)
+        self.tableWidget.horizontalHeader().setSortIndicatorShown(False)
+        self.SortButton.clicked.connect(self.sort_data)
+        self.sort_order = QtCore.Qt.AscendingOrder  # Initialize sort order variable
+        
+        # Add a column to store the sort order in your SQLite database
+        self.cursor.execute("""
+            CREATE TABLE IF NOT EXISTS sorting_info (
+                id INTEGER PRIMARY KEY AUTOINCREMENT,
+                sort_order INTEGER
+            )
+        """)
+        self.connection.commit()
+        
+
+     
+
+        #SORTING DATA BY DEFAULT
+    def sort_data(self):
+        time_column_index = 4  # Assuming the index of the time column is 4 (0-based indexing)
+
+        if self.sort_order == QtCore.Qt.AscendingOrder:
+            self.sort_order = QtCore.Qt.DescendingOrder
+        else:
+            self.sort_order = QtCore.Qt.AscendingOrder
+
+        # Update the sort order in the database
+        self.cursor.execute("UPDATE sorting_info SET sort_order = ?", (self.sort_order,))
+        self.connection.commit()
+
+        # Update the table widget to reflect the new sort order
+        self.tableWidget.sortByColumn(time_column_index, self.sort_order)
+
+            
+
+
+
+#--------------------------------------------------------------            
+
+    def check_changes(self):
+        try:
+            if self.tableWidget.rowCount() > 0:  # Check if there's data in the table
+                if hasattr(self, 'SaveButton'):
+                    self.SaveButton.setEnabled(self.changes_made)
+                else:
+                    self.SaveButton = QtWidgets.QPushButton(Form)
+                    self.SaveButton.setGeometry(QtCore.QRect(930, 540, 221, 41))
+                    font = QtGui.QFont()
+                    font.setFamily("Arial")
+                    font.setPointSize(12)
+                    font.setBold(True)
+                    font.setItalic(False)
+                    font.setWeight(75)
+                    self.SaveButton.setFont(font)
+                    self.SaveButton.setCursor(QtGui.QCursor(QtCore.Qt.PointingHandCursor))
+                    self.SaveButton.setStyleSheet("border-radius: 9px;\n"
+                                                   "background-color: rgb(255, 255, 255);\n"
+                                                   "background-color: rgb(23, 65, 255);\n"
+                                                   "color: rgb(255, 255, 255);\n"
+                                                   "background-color: rgb(170, 255, 255);\n"
+                                                   "background-color: rgb(56, 170, 170);")
+                    self.SaveButton.setObjectName("SaveButton")
+                    self.SaveButton.clicked.connect(self.save_changes)
+                    self.SaveButton.setEnabled(self.changes_made)
+        except Exception as e:
+            print("Error in check_changes:", e)
+
+#--------------------------------------------------------------    
+        
+#DELETE BUTTON
+    def delete_data(self):
+        selected_items = self.tableWidget.selectedItems()
+        if not selected_items:
+            return
+        row = selected_items[0].row()
+        reply = QMessageBox.question(Form, 'Confirmation', 'Are you sure you want to delete this row?', 
+                              QMessageBox.Yes | QMessageBox.No, QMessageBox.No)
+        if reply == QMessageBox.Yes:
+            try:
+                self.cursor.execute(f"DELETE FROM your_table_name WHERE rowid = (SELECT rowid FROM your_table_name LIMIT 1 OFFSET {row})")
+                self.connection.commit()  # Commit changes
+
+                self.update_table_widget()
+
+            except sqlite3.Error as e:
+                print("Error deleting data:", e)
+
+#-------------------------------------------------------------- 
+           
+#INSERT BUTTON
+    def insert_data(self):
+        last_name = self.Last.text()
+        first_name = self.First.text()
+        middle = self.Middle.text()
+        section = self.Section.text()
+        time = self.Time.text()
+        date = self.Date.text()
+
+        if not (last_name and first_name and section and time and date):
+            QMessageBox.warning(None, "Warning", "Please fill all the required fields.")
+            return
+
+        try:
+            self.cursor.execute("""
+                INSERT INTO your_table_name (last_name, first_name, middle, section, time, date)
+                VALUES (?, ?, ?, ?, ?, ?)
+            """, (last_name, first_name, middle, section, time, date))
+            self.connection.commit()  # Commit changes
+
+            self.update_table_widget()
+
+            self.Last.clear()
+            self.First.clear()
+            self.Middle.clear()
+            self.Section.clear()
+            self.Time.clear()
+            self.Date.clear()
+
+        except sqlite3.Error as e:
+            print("Error inserting data:", e)
+
+#--------------------------------------------------------------    
+        
+    def update_table_widget(self):
+        try:
+            self.cursor.execute("PRAGMA table_info(your_table_name)")
+            columns = self.cursor.fetchall()
+
+            # Exclude the "id" column from headers and include headers from "Last" to "Date"
+            headers = [column[1] for column in columns[1:]]  # Exclude the first column ("id")
+
+            # Set the headers
+            self.tableWidget.setColumnCount(len(headers) + 1)  # Add one extra column for the edit buttons
+            self.tableWidget.setHorizontalHeaderLabels(headers + ["Edit"])  # Add "Edit" header
+
+            # Fetch data from the database without sorting
+            self.cursor.execute("SELECT last_name, first_name, middle, section, time, date FROM your_table_name")  # Select all relevant columns
+            data = self.cursor.fetchall()
+
+            if data:
+                # Set row count
+                self.tableWidget.setRowCount(len(data))
+
+                # Fill table widget with data
+                for row_index, row_data in enumerate(data):
+                    for col_index, cell_data in enumerate(row_data):
+                        item = QtWidgets.QTableWidgetItem(str(cell_data))
+                        self.tableWidget.setItem(row_index, col_index, item)
+
+                    # Add an edit button in the last column for each row
+                    edit_button = QtWidgets.QPushButton("Edit")
+                    edit_button.clicked.connect(lambda _, row=row_index: self.edit_data(row))  # Connect the clicked signal to the edit_data method with the row index
+                    self.tableWidget.setCellWidget(row_index, len(headers), edit_button)
+
+            else:
+                # If no data is fetched, clear the table
+                self.tableWidget.setRowCount(0)
+
+        except sqlite3.Error as e:
+            print("Error updating table widget:", e)
+
+#--------------------------------------------------------------          
+            
+#EDITING DATA
+    def edit_data(self, original_row):
+        try:
+            # Fetch data from the database based on the original row index
+            self.cursor.execute("SELECT last_name, first_name, middle, section, time, date FROM your_table_name ORDER BY rowid")
+            data = self.cursor.fetchall()
+            if data:
+                # Get the data corresponding to the selected row
+                last_name, first_name, middle, section, time, date = data[original_row]
+                # Create a dialog window for editing
+                edit_dialog = QtWidgets.QDialog()
+                edit_dialog.setWindowTitle("Edit Data")
+                # Create QLineEdit widgets and populate them with the data
+                last_name_edit = QtWidgets.QLineEdit(last_name)
+                first_name_edit = QtWidgets.QLineEdit(first_name)
+                middle_edit = QtWidgets.QLineEdit(middle)
+                section_edit = QtWidgets.QLineEdit(section)
+                time_edit = QtWidgets.QLineEdit(time)
+                date_edit = QtWidgets.QLineEdit(date)
+                # Create a layout for the dialog window
+                layout = QtWidgets.QFormLayout()
+                layout.addRow("Last Name:", last_name_edit)
+                layout.addRow("First Name:", first_name_edit)
+                layout.addRow("Middle:", middle_edit)
+                layout.addRow("Section:", section_edit)
+                layout.addRow("Time:", time_edit)
+                layout.addRow("Date:", date_edit)
+                # Create a "Save" button
+                save_button = QtWidgets.QPushButton("Save")
+                layout.addRow(save_button)
+                # Initialize the Save button as disabled
+                save_button.setEnabled(False)
+                # Connect the "Save" button to a method for saving the changes
+                save_button.clicked.connect(lambda: self.save_changes(original_row, last_name_edit.text(), first_name_edit.text(),
+                                                                      middle_edit.text(), section_edit.text(),
+                                                                      time_edit.text(), date_edit.text(), save_button,
+                                                                      last_name_edit, first_name_edit, middle_edit,
+                                                                      section_edit, time_edit, date_edit))
+                # Connect QLineEdit fields to the method for tracking changes
+                last_name_edit.textChanged.connect(lambda: self.check_changes_dialog(last_name, last_name_edit.text(), save_button))
+                first_name_edit.textChanged.connect(lambda: self.check_changes_dialog(first_name, first_name_edit.text(), save_button))
+                middle_edit.textChanged.connect(lambda: self.check_changes_dialog(middle, middle_edit.text(), save_button))
+                section_edit.textChanged.connect(lambda: self.check_changes_dialog(section, section_edit.text(), save_button))
+                time_edit.textChanged.connect(lambda: self.check_changes_dialog(time, time_edit.text(), save_button))
+                date_edit.textChanged.connect(lambda: self.check_changes_dialog(date, date_edit.text(), save_button))
+                # Set the layout for the dialog window
+                edit_dialog.setLayout(layout)
+                # Show the dialog window
+                edit_dialog.exec_()
+                # Disable the save button after the dialog is closed
+                save_button.setEnabled(False)
+        except sqlite3.Error as e:
+            print("Error editing data:", e)
+
+
+#--------------------------------------------------------------       
+    def print_data(self):
+        try:
+            # Fetch data from the database
+            self.cursor.execute("SELECT last_name, first_name, middle, section, time, date FROM your_table_name")
+            data = self.cursor.fetchall()
+
+            if data:
+                # Create a new Excel workbook
+                workbook = openpyxl.Workbook()
+                sheet = workbook.active
+
+                # Write headers to the first row
+                headers = ["Last Name", "First Name", "Middle", "Section", "Time", "Date"]
+                for col, header in enumerate(headers, start=1):
+                    sheet.cell(row=1, column=col, value=header)
+
+                # Write data to the subsequent rows
+                for row_index, row_data in enumerate(data, start=2):
+                    for col_index, cell_data in enumerate(row_data, start=1):
+                        sheet.cell(row=row_index, column=col_index, value=cell_data)
+
+                # Save the Excel file
+                excel_file = "data.xlsx"
+                workbook.save(excel_file)
+
+                # Open the Excel file using subprocess
+                subprocess.Popen(["start", excel_file], shell=True)
+
+            else:
+                QMessageBox.warning(None, "Warning", "No data available to print.")
+
+        except Exception as e:
+            print("Error printing data:", e)
+
+#--------------------------------------------------------------       
+     
+#DISABLE SAVING IF THERES NO CHANGES MADE
+    def check_changes_dialog(self, original_text, current_text, save_button):
+        # Enable or disable the "Save" button based on changes
+        save_button.setEnabled(original_text != current_text)
+
+#--------------------------------------------------------------    
+        
+#SAVING EDITING
+    def save_changes(self, row, last_name, first_name, middle, section, time, date, save_button, last_name_edit, first_name_edit, middle_edit, section_edit, time_edit, date_edit):
+        try:
+            # Update the corresponding row in the database with the edited information
+            self.cursor.execute("""
+                UPDATE your_table_name
+                SET last_name=?, first_name=?, middle=?, section=?, time=?, date=?
+                WHERE rowid = (SELECT rowid FROM your_table_name LIMIT 1 OFFSET ?)
+            """, (last_name, first_name, middle, section, time, date, row))
+            self.connection.commit()  # Commit changes
+            # Update the table widget
+            self.update_table_widget()
+            # Disable the save button after saving changes
+            save_button.setEnabled(False)
+            # Clear focus from QLineEdit widgets to unselect any user input
+            last_name_edit.clearFocus()
+            first_name_edit.clearFocus()
+            middle_edit.clearFocus()
+            section_edit.clearFocus()
+            time_edit.clearFocus()
+            date_edit.clearFocus()
+        except sqlite3.Error as e:
+            print("Error updating data:", e)
+
+#--------------------------------------------------------------       
+     
+#CONNECTING OR CREATING A DATABASE IF NOT EXISTED
+    def connect_or_create_database(self, db_file):
+        try:
+            # Connect to the database
+            self.connection = sqlite3.connect(db_file)
+            self.cursor = self.connection.cursor()
+            # Create a table if it doesn't exist
+            self.cursor.execute("""
+                CREATE TABLE IF NOT EXISTS your_table_name (
+                    id INTEGER PRIMARY KEY AUTOINCREMENT,
+                    last_name TEXT,
+                    first_name TEXT,
+                    middle TEXT,
+                    section TEXT,
+                    time TEXT,
+                    date TEXT
+                )
+            """)
+            self.connection.commit()
+            # Update the table widget after connection or creation
+            self.update_table_widget()
+        except sqlite3.Error as e:
+            print("Error connecting to the database:", e)
+
+            
+#--------------------------------------------------------------   
+         
+#SORTING DATA
+    def filter_table(self):
+        search_text = self.label1_6.text().strip().lower()  # Get the search text and convert to lowercase
+        # Iterate through each row in the table
+        for row in range(self.tableWidget.rowCount()):
+            last_name = self.tableWidget.item(row, 0).text().lower()  # Get last name from the first column
+            first_name = self.tableWidget.item(row, 1).text().lower()  # Get first name from the second column
+            # Check if the search text is present in either last name or first name
+            if search_text in last_name or search_text in first_name:
+                self.tableWidget.setRowHidden(row, False)  # Show the row
+            else:
+                self.tableWidget.setRowHidden(row, True)   # Hide the row
+                
+#--------------------------------------------------------------       
+     
+#NOT INCLUDED
+    def retranslateUi(self, Form):
+        _translate = QtCore.QCoreApplication.translate
+        Form.setWindowTitle(_translate("Form", "0"))
+        self.InsertButton.setText(_translate("Form", "Insert"))
+        self.DeleteButton.setText(_translate("Form", "Delete"))
+        self.Last.setPlaceholderText(_translate("Form", "Last"))
+        self.First.setPlaceholderText(_translate("Form", "First"))
+        self.Middle.setPlaceholderText(_translate("Form", "Middle"))
+        self.Section.setPlaceholderText(_translate("Form", "Section"))
+        self.Time.setPlaceholderText(_translate("Form", "Time"))
+        self.label1_6.setPlaceholderText(_translate("Form", "Search"))
+        self.label_4.setText(_translate("Form", "Last"))
+        self.label_5.setText(_translate("Form", "First"))
+        self.label_6.setText(_translate("Form", "Middle"))
+        self.label_7.setText(_translate("Form", "Section"))
+        self.label_8.setText(_translate("Form", "Time"))
+        self.Date.setPlaceholderText(_translate("Form", "Date"))
+        self.label_9.setText(_translate("Form", "Date"))
+        self.PrintButton.setText(_translate("Form", "Print"))
+        self.SortButton.setText(_translate("Form", "Sort"))
+        self.label_10.setText(_translate("Form", "Welcome! "))
+import e_rc
+
+
+
+if __name__ == "__main__":
+    import sys
+    app = QtWidgets.QApplication(sys.argv)
+    Form = QtWidgets.QWidget()
+    import sys
+    if len(sys.argv) > 1:
+        username = sys.argv[1]
+        ui = Ui_Form(username)
+    else:
+        print("Usage: python file1.py <username>")
+    ui.setupUi(Form)
+    Form.show()
+    sys.exit(app.exec_())
+
