@@ -17,6 +17,7 @@ class Ui_Dialog(object):
     def setupUi(self, Dialog):
         Dialog.setObjectName("Dialog")
         Dialog.resize(399, 402)
+        Dialog.setFixedSize(399, 402)  # Set fixed size here
         self.ConfirmButton = QtWidgets.QPushButton(Dialog)
         self.ConfirmButton.setGeometry(QtCore.QRect(60, 320, 131, 41))
         font = QtGui.QFont()
