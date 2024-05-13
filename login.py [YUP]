@@ -1,5 +1,5 @@
-#pyrcc5 -o basiclogin_rc.py basiclogin.qrc
-#pyrcc5 -o e_rc.py e.qrc
+#pyrcc5 -o activeaccount_rc.py basiclogin.qrc
+#pyrcc5 -o account_rc.py e.qrc
 #pyinstaller --noconsole login.py --onefile
 
 import sys
@@ -8,6 +8,8 @@ from PyQt5.QtWidgets import QMessageBox
 import sqlite3
 import subprocess
 from table import Ui_Form
+import time
+
 
 #greekgod fat ass
 
@@ -153,14 +155,20 @@ class Ui_Dialog(object):
         if user:
             Dialog.close()
             QMessageBox.information(None, "Login", f"{username} welcome back!")
-            #subprocess.Popen(["python", "table.py", username])
-            subprocess.Popen(["table.exe", username])
-
+            # Start the subprocesses and store their references
+            self.table_process = subprocess.Popen(["python", "table.py", username])
+            time.sleep(2)
+            self.active_process = subprocess.Popen(["python", "activeaccount.py", username])
             
+            self.active_process.wait()
+            self.table_process.terminate()
+            subprocess.Popen(["python", "login.py"])
         else:
             QMessageBox.warning(None, "Login", "Invalid username or password")
         self.usernameInput_2.clear()
         self.passwordInput_2.clear()
+        
+
 
 
 
