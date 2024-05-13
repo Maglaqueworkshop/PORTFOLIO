@@ -14,8 +14,6 @@ import openpyxl
 class Ui_Form(object):
     def __init__(self, username):
         self.db_file = f"{username}_database_file.db"
-        print(self.db_file)
-
 
     def setupUi(self, Form):
         Form.setObjectName("Form")
@@ -705,7 +703,6 @@ if __name__ == "__main__":
     import sys
     app = QtWidgets.QApplication(sys.argv)
     Form = QtWidgets.QWidget()
-    import sys
     if len(sys.argv) > 1:
         username = sys.argv[1]
         ui = Ui_Form(username)
