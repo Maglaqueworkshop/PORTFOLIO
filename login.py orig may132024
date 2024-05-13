@@ -1,5 +1,3 @@
-
-
 #pyrcc5 -o basiclogin_rc.py basiclogin.qrc
 #pyrcc5 -o e_rc.py e.qrc
 #pyinstaller --noconsole login.py --onefile
@@ -11,6 +9,7 @@ import sqlite3
 import subprocess
 from table import Ui_Form
 
+#greekgod fat ass
 
 class Ui_Dialog(object):
     def setupUi(self, Dialog):
@@ -121,10 +120,8 @@ class Ui_Dialog(object):
         self.RegisterButton.clicked.connect(self.register)
         self.ConfirmButton.clicked.connect(self.login)
 
-        # Create or connect to the database
         self.conn = sqlite3.connect("user.db")
         self.cur = self.conn.cursor()
-        # Create table if not exists
         self.cur.execute("CREATE TABLE IF NOT EXISTS users (id INTEGER PRIMARY KEY, username TEXT, password TEXT)")
         self.conn.commit
 
@@ -141,7 +138,6 @@ class Ui_Dialog(object):
     def register(self):
         username = self.usernameInput_2.text()
         password = self.usernameInput_2.text()
-        # Insert username and password into the database
         self.cur.execute("INSERT INTO users (username, password) VALUES (?, ?)", (username, password))
         self.conn.commit()
         QMessageBox.information(None, "Registration", "Registration Successful")
@@ -155,9 +151,12 @@ class Ui_Dialog(object):
         self.cur.execute("SELECT * FROM users WHERE username=? AND password=?", (username, password))
         user = self.cur.fetchone()
         if user:
+            Dialog.close()
             QMessageBox.information(None, "Login", f"{username} welcome back!")
-            # Open table.py after successful login
-            subprocess.Popen(["python", "table.py", username])
+            #subprocess.Popen(["python", "table.py", username])
+            subprocess.Popen(["table.exe", username])
+
+            
         else:
             QMessageBox.warning(None, "Login", "Invalid username or password")
         self.usernameInput_2.clear()
