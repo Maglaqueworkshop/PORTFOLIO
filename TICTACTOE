@@ -21,117 +21,181 @@ public class qwfqwfqwf extends javax.swing.JFrame {
         b1.addActionListener((java.awt.event.ActionEvent evt) -> {
             b1ActionPerformed(evt);
             checkWin();
-
+            b1.setEnabled(false);
         });
 
         b2.addActionListener((java.awt.event.ActionEvent evt) -> {
             b2ActionPerformed(evt);
             checkWin();
+            b2.setEnabled(false);
         });
 
         b3.addActionListener((java.awt.event.ActionEvent evt) -> {
             b3ActionPerformed(evt);
             checkWin();
+            b3.setEnabled(false);
         });
 
         b4.addActionListener((java.awt.event.ActionEvent evt) -> {
             b4ActionPerformed(evt);
             checkWin();
+            b4.setEnabled(false);
         });
 
         b5.addActionListener((java.awt.event.ActionEvent evt) -> {
             b5ActionPerformed(evt);
             checkWin();
+            b5.setEnabled(false);
         });
 
         b6.addActionListener((java.awt.event.ActionEvent evt) -> {
             b6ActionPerformed(evt);
             checkWin();
+            b6.setEnabled(false);
         });
 
         b7.addActionListener((java.awt.event.ActionEvent evt) -> {
             b7ActionPerformed(evt);
             checkWin();
+            b7.setEnabled(false);
         });
 
         b8.addActionListener((java.awt.event.ActionEvent evt) -> {
             b8ActionPerformed(evt);
             checkWin();
+            b8.setEnabled(false);
         });
 
         b9.addActionListener((java.awt.event.ActionEvent evt) -> {
             b9ActionPerformed(evt);
             checkWin();
+            b9.setEnabled(false);
         });
     }
 char currentPlayer = 'X';
-char player1 = 'X';
-char player2 = 'O';
 String Winner;
 
-    public void actionPerformed(ActionEvent e) {
-        javax.swing.JButton clickedButton = (javax.swing.JButton) e.getSource();
-        if (clickedButton.getText().equals("")) {
-            clickedButton.setText(String.valueOf(currentPlayer));
-            replace();
-        }
+public void actionPerformed(ActionEvent e) {
+    javax.swing.JButton clickedButton = (javax.swing.JButton) e.getSource();
+    if (clickedButton.getText().equals("")) {
+        clickedButton.setText(String.valueOf(currentPlayer));
+        replace();
     }
+}
 
-     private void replace(){
-            if (currentPlayer == 'X'){
-                currentPlayer = 'O';
-            }
-            else{
-               currentPlayer = 'X'; 
-            }
-     }
+private void replace(){
+       if (currentPlayer == 'X'){
+           currentPlayer = 'O';
+       }
+       else{
+          currentPlayer = 'X'; 
+       }
+}
+
+private boolean disableButton(){
+    b1.setEnabled(false);
+    b2.setEnabled(false);
+    b3.setEnabled(false);
+    b4.setEnabled(false);
+    b5.setEnabled(false);
+    b6.setEnabled(false);
+    b7.setEnabled(false);
+    b8.setEnabled(false);
+    b9.setEnabled(false);
+    
+    return true;
+}
 
 private boolean checkWin() {
     // Check rows
     System.out.print("dick");
 
-    if (b1.getText().charAt(0) == player1 && b2.getText().charAt(0) == player1 && b3.getText().charAt(0) == player1) {
+    if (b1.getText().charAt(0) == 'X' && b2.getText().charAt(0) == 'X' && b3.getText().charAt(0) == 'X') {
         Winner = "Player 1";
         javax.swing.JOptionPane.showMessageDialog(this, Winner);
+        disableButton();
     }
-    else if (b4.getText().charAt(0) == player1 && b5.getText().charAt(0) == player1 && b6.getText().charAt(0) == player1) {
+    else if (b4.getText().charAt(0) == 'X' && b5.getText().charAt(0) == 'X' && b6.getText().charAt(0) == 'X') {
         Winner = "Player 1";
         javax.swing.JOptionPane.showMessageDialog(this, Winner);
+        disableButton();
     }
-    else if (b7.getText().charAt(0) == player1 && b8.getText().charAt(0) == player1 && b9.getText().charAt(0) == player1) {
+    else if (b7.getText().charAt(0) == 'X' && b8.getText().charAt(0) == 'X' && b9.getText().charAt(0) == 'X') {
         Winner = "Player 1";
         javax.swing.JOptionPane.showMessageDialog(this, Winner);
+        disableButton();
     }
-    else if (b3.getText().charAt(0) == player1 && b5.getText().charAt(0) == player1 && b7.getText().charAt(0) == player1) {
+    else if (b3.getText().charAt(0) == 'X' && b5.getText().charAt(0) == 'X' && b7.getText().charAt(0) == 'X') {
         Winner = "Player 1";
         javax.swing.JOptionPane.showMessageDialog(this, Winner);
+        disableButton();
     }
-    else if (b1.getText().charAt(0) == player1 && b5.getText().charAt(0) == player1 && b9.getText().charAt(0) == player1){
+    else if (b1.getText().charAt(0) == 'X' && b5.getText().charAt(0) == 'X' && b9.getText().charAt(0) == 'X'){
         Winner = "Player 1";
         javax.swing.JOptionPane.showMessageDialog(this, Winner);
+        disableButton();
     } 
-
-    if (b1.getText().charAt(0) == player2 && b2.getText().charAt(0) == player2 && b3.getText().charAt(0) == player2) {
-        Winner = "Player 2";
+    else if (b1.getText().charAt(0) == 'X' && b4.getText().charAt(0) == 'X' && b7.getText().charAt(0) == 'X'){
+        Winner = "Player 1";
         javax.swing.JOptionPane.showMessageDialog(this, Winner);
+        disableButton();
     }
-    else if (b4.getText().charAt(0) == player2 && b5.getText().charAt(0) == player2 && b6.getText().charAt(0) == player2) {
-        Winner = "Player 2";
+    else if (b2.getText().charAt(0) == 'X' && b5.getText().charAt(0) == 'X' && b8.getText().charAt(0) == 'X'){
+        Winner = "Player 1";
         javax.swing.JOptionPane.showMessageDialog(this, Winner);
+        disableButton();
     }
-    else if (b7.getText().charAt(0) == player2 && b8.getText().charAt(0) == player2 && b9.getText().charAt(0) == player2) {
-        Winner = "Player 2";
+    else if (b3.getText().charAt(0) == 'X' && b6.getText().charAt(0) == 'X' && b9.getText().charAt(0) == 'X'){
+        Winner = "Player 1";
         javax.swing.JOptionPane.showMessageDialog(this, Winner);
+        disableButton();
     }
-    else if (b3.getText().charAt(0) == player2 && b5.getText().charAt(0) == player2 && b7.getText().charAt(0) == player2) {
+    //player2 = 'O'
+    else if (b1.getText().charAt(0) == 'O' && b2.getText().charAt(0) == 'O' && b3.getText().charAt(0) == 'O') {
         Winner = "Player 2";
         javax.swing.JOptionPane.showMessageDialog(this, Winner);
+        disableButton();
     }
-    else if (b1.getText().charAt(0) == player2 && b5.getText().charAt(0) == player2 && b9.getText().charAt(0) == player2){
+    else if (b4.getText().charAt(0) == 'O' && b5.getText().charAt(0) == 'O' && b6.getText().charAt(0) == 'O') {
         Winner = "Player 2";
         javax.swing.JOptionPane.showMessageDialog(this, Winner);
-    } 
-    return false;
+        disableButton();
+    }
+    else if (b7.getText().charAt(0) == 'O' && b8.getText().charAt(0) == 'O' && b9.getText().charAt(0) == 'O') {
+        Winner = "Player 2";
+        javax.swing.JOptionPane.showMessageDialog(this, Winner);
+        disableButton();
+    }
+    else if (b3.getText().charAt(0) == 'O' && b5.getText().charAt(0) == 'O' && b7.getText().charAt(0) == 'O') {
+        Winner = "Player 2";
+        javax.swing.JOptionPane.showMessageDialog(this, Winner);
+        disableButton();
+    }
+    else if (b1.getText().charAt(0) == 'O' && b5.getText().charAt(0) == 'O' && b9.getText().charAt(0) == 'O'){
+        Winner = "Player 2";
+        javax.swing.JOptionPane.showMessageDialog(this, Winner);
+        disableButton();
+    }
+    else if (b1.getText().charAt(0) == 'O' && b4.getText().charAt(0) == 'O' && b7.getText().charAt(0) == 'O'){
+        Winner = "Player 2";
+        javax.swing.JOptionPane.showMessageDialog(this, Winner);
+        disableButton();
+    }
+    else if (b2.getText().charAt(0) == 'O' && b5.getText().charAt(0) == 'O' && b8.getText().charAt(0) == 'O'){
+        Winner = "Player 2";
+        javax.swing.JOptionPane.showMessageDialog(this, Winner);
+        disableButton();
+    }
+    else if (b3.getText().charAt(0) == 'O' && b6.getText().charAt(0) == 'O' && b9.getText().charAt(0) == 'O'){
+        Winner = "Player 2";
+        javax.swing.JOptionPane.showMessageDialog(this, Winner);
+        disableButton();
+    }
+    else {
+        javax.swing.JOptionPane.showMessageDialog(this, "Draw!");
+        disableButton();
+    }
+    return true;
 }
 
 //----------------------------------------
@@ -188,6 +252,7 @@ private boolean checkWin() {
     // <editor-fold defaultstate="collapsed" desc="Generated Code">//GEN-BEGIN:initComponents
     private void initComponents() {
 
+        jButton1 = new javax.swing.JButton();
         b3 = new javax.swing.JButton();
         b1 = new javax.swing.JButton();
         b2 = new javax.swing.JButton();
@@ -197,6 +262,9 @@ private boolean checkWin() {
         b7 = new javax.swing.JButton();
         b8 = new javax.swing.JButton();
         b9 = new javax.swing.JButton();
+        ResetButton = new javax.swing.JButton();
+
+        jButton1.setText("jButton1");
 
         setDefaultCloseOperation(javax.swing.WindowConstants.EXIT_ON_CLOSE);
 
@@ -228,6 +296,13 @@ private boolean checkWin() {
 
         b9.setFont(new java.awt.Font("Segoe UI", 3, 48)); // NOI18N
 
+        ResetButton.setText("Reset");
+        ResetButton.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                ResetButtonActionPerformed(evt);
+            }
+        });
+
         javax.swing.GroupLayout layout = new javax.swing.GroupLayout(getContentPane());
         getContentPane().setLayout(layout);
         layout.setHorizontalGroup(
@@ -255,6 +330,10 @@ private boolean checkWin() {
                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                         .addComponent(b9, javax.swing.GroupLayout.PREFERRED_SIZE, 84, javax.swing.GroupLayout.PREFERRED_SIZE)))
                 .addContainerGap(38, Short.MAX_VALUE))
+            .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, layout.createSequentialGroup()
+                .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                .addComponent(ResetButton)
+                .addGap(14, 14, 14))
         );
         layout.setVerticalGroup(
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
@@ -278,11 +357,35 @@ private boolean checkWin() {
                         .addComponent(b5, javax.swing.GroupLayout.PREFERRED_SIZE, 91, javax.swing.GroupLayout.PREFERRED_SIZE)
                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                         .addComponent(b8, javax.swing.GroupLayout.PREFERRED_SIZE, 91, javax.swing.GroupLayout.PREFERRED_SIZE)))
-                .addContainerGap(89, Short.MAX_VALUE))
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 59, Short.MAX_VALUE)
+                .addComponent(ResetButton)
+                .addContainerGap())
         );
 
         pack();
     }// </editor-fold>//GEN-END:initComponents
+
+    private void ResetButtonActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_ResetButtonActionPerformed
+        b1.setText("");
+        b2.setText("");
+        b3.setText("");
+        b4.setText("");
+        b5.setText("");
+        b6.setText("");
+        b7.setText("");
+        b8.setText("");
+        b9.setText("");
+        currentPlayer = 'X';
+        b1.setEnabled(true);
+        b2.setEnabled(true);
+        b3.setEnabled(true);
+        b4.setEnabled(true);
+        b5.setEnabled(true);
+        b6.setEnabled(true);
+        b7.setEnabled(true);
+        b8.setEnabled(true);
+        b9.setEnabled(true);
+    }//GEN-LAST:event_ResetButtonActionPerformed
 
     
 
@@ -322,6 +425,7 @@ private boolean checkWin() {
     }
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
+    private javax.swing.JButton ResetButton;
     private javax.swing.JButton b1;
     private javax.swing.JButton b2;
     private javax.swing.JButton b3;
@@ -331,5 +435,6 @@ private boolean checkWin() {
     private javax.swing.JButton b7;
     private javax.swing.JButton b8;
     private javax.swing.JButton b9;
+    private javax.swing.JButton jButton1;
     // End of variables declaration//GEN-END:variables
 }
