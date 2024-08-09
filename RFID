@@ -17,18 +17,20 @@ String tagID = ""; // Declare tagID as a global variable
 // INFORMATION CAN BE CUSTOMIZE FOR USE
 struct MasterTag {
   String tagID; //REGISTERING ID
-  String name; //SETTING THE STUDENT NAME
+  String Last; //SETTING THE STUDENT NAME
+  String First;
+  String Middle;
+  String Section;
   int age; //THE AGE
   String phoneNumber; //PHONE NUMBER
   String location; // LOCATION
 };
-
+//{"DA2DAD80", "ANNE DELACRUZ", 25, "+63987654321", "321 Location"}
 // Array of master tags
 // Setting/Inputting informations
 MasterTag masterTags[] = {
-  //TAGID, NAME, AGE, PHONENUMBER, LOCATION
-  {"161E4504", "MARK VERZON", 30, "+63123456789", "123 Location"},
-  //{"DA2DAD80", "ANNE DELACRUZ", 25, "+63987654321", "321 Location"},
+  {"161E4504", "Maglaque", "Adrian", "Cruz", "ICT-C", 19, "+63123456789", "123 Location"},
+  {"DA2DAD80", "Tiatco", "Khatelyn", "Celmar", "ICT-C", 19, "+63198456789", "123 Location"}
 };
 
 // Create instance
@@ -48,7 +50,7 @@ void setup()
   lcd.clear();
   lcd.print("SYSTEM READY!");
   lcd.setCursor(0, 1);
-  lcd.print("<<< SCAN HERE");
+  lcd.print("SCAN NOW");
 }
 
 void loop()
@@ -75,19 +77,17 @@ void loop()
         digitalWrite(buzzer, LOW);
 
         lcd.setCursor(0, 1);
-        scrollText("ID: " + masterTags[i].name); //PRINT THE NAME OF STUDENT
-        //scrollText("Age: " + String(masterTags[i].age));
-        //scrollText("Phone: " + masterTags[i].phoneNumber);
-        //scrollText("Location: " + masterTags[i].location);
+        scrollText("ID: " + masterTags[i].First); //PRINT THE FIRST NAME OF STUDENT
+
+        // Send the full student data over serial
+        String studentData = masterTags[i].tagID + "," + masterTags[i].Last + "," + masterTags[i].First + "," + masterTags[i].Middle + "," + masterTags[i].Section;
+        Serial.println(studentData);
+
         delay(2000); //1SECONDS
 
         lcd.clear();
         lcd.setCursor(0, 0);
         scrollText("PROCESS SAVED!");
-
-
-
-
         break;
       }
     }
@@ -109,7 +109,7 @@ void loop()
       }
 
       lcd.setCursor(0, 1);
-      scrollText("Card Unregistered!");
+      scrollText("Unregistered");
     }
 
     delay(2000); //2SECONDS
@@ -153,7 +153,6 @@ void scrollText(String text)
   {
     for (int i = 0; i <= textLength - 16; i++)//LOOPING EACH
     {
-      //lcd.clear();
       lcd.setCursor(0, 1);
       lcd.print(text.substring(i, i + 16));
       delay(1000); // Adjust scrolling speed here
@@ -171,5 +170,5 @@ void resetLCD()
   lcd.clear();
   lcd.print("SYSTEM READY!");
   lcd.setCursor(0, 1);
-  lcd.print("<<< SCAN HERE");
+  lcd.print("SCAN NOW");
 }
